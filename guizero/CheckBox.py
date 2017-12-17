@@ -8,10 +8,11 @@ class CheckBox(ScheduleMixin, DestroyMixin, EnableMixin, FocusMixin, DisplayMixi
 
         self._text = str(text)
         self.description = "[CheckBox] object with text \"" + self._text + "\""
-        self._value = IntVar()
 
         # Create a tk Checkbutton object within this object
-        self.tk = Checkbutton(master.tk, text=text, variable=self._value)
+        self.tk = Checkbutton(master.tk, text=text)
+        self._value = IntVar(master=self.tk.winfo_toplevel())
+        self.tk.configure(variable=self._value)
 
         # Add a command if there was one
         if command is not None:
@@ -31,9 +32,8 @@ class CheckBox(ScheduleMixin, DestroyMixin, EnableMixin, FocusMixin, DisplayMixi
     def value(self, value):
         try:
             value = int(value)
-            if value in [0, 1]:
+            if value in {0, 1}:
                 self._value.set(value)
-
         except ValueError:
             utils.error_format("You can only set the value of " + self.description + " to either 0 (not checked) or 1 (checked)")
 
